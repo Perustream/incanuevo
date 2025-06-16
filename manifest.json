@@ -1,10 +1,11 @@
+
 {
   "name": "Radio Inca 96.5 FM",
-  "short_name": "Radio Pasion 96.5 FM",
-  "start_url": "index.html",
+  "short_name": "Radio Inca",
+  "start_url": "index_radio_inca_965fm_notificacion_ok.html",
   "display": "standalone",
-  "background_color": "#ffe600",
-  "theme_color": "#ffe600",
+  "background_color": "#000000",
+  "theme_color": "#e91e63",
   "icons": [
     {
       "src": "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg",

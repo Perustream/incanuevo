@@ -4,6 +4,29 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById("installBtn");
+      if (btn) btn.style.display = "block";
+    });
+
+    function installApp() {
+      const btn = document.getElementById("installBtn");
+      btn.style.display = "none";
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+      });
+    }
+  </script>
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffe600">
   <script>
     if ('serviceWorker' in navigator) {
@@ -17,7 +40,7 @@
 
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Radio Inca</title>
+<title>Radio Inca 96.5 FM</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -227,9 +250,67 @@ overlay-bottom {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
+
+    .social-btn {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .social-btn:hover {
+      transform: scale(1.2) rotate(5deg);
+      opacity: 0.85;
+    }
+    .social-btn:nth-child(1) { animation: pop 0.6s ease-out forwards; animation-delay: 0.2s; }
+    .social-btn:nth-child(2) { animation: pop 0.6s ease-out forwards; animation-delay: 0.4s; }
+    .social-btn:nth-child(3) { animation: pop 0.6s ease-out forwards; animation-delay: 0.6s; }
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+.social-bar a {
+  opacity: 0;
+  transform: translateX(50px) scale(0.6);
+  animation: socialEnter 0.5s ease-out forwards;
+}
+.social-bar a:nth-child(1) { animation-delay: 0.1s; }
+.social-bar a:nth-child(2) { animation-delay: 0.2s; }
+.social-bar a:nth-child(3) { animation-delay: 0.3s; }
+.social-bar a:nth-child(4) { animation-delay: 0.4s; }
+.social-bar a:nth-child(5) { animation-delay: 0.5s; }
+
+.social-bar a:hover {
+  transform: scale(1.2) rotate(-5deg);
+  transition: transform 0.3s ease;
+  opacity: 0.9;
+}
+
+@keyframes socialEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(50px) scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 </style>
+
+<script>
+  document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+  });
+  document.addEventListener("selectstart", function(e) {
+    e.preventDefault();
+  });
+  document.addEventListener("dragstart", function(e) {
+    e.preventDefault();
+  });
+</script>
+
 </head>
 <body>
+  <button id="installBtn" onclick="installApp()" style="display:none;position:fixed;bottom:20px;right:20px;padding:10px 16px;font-size:16px;background:#e91e63;color:white;border:none;border-radius:8px;z-index:1000;">📲 Instalar app</button>
 
 <div id="install-popup" style="
   position: fixed;
@@ -245,7 +326,7 @@ overlay-bottom {
   text-align: center;
   display: none;
 ">
-  <p style="margin-bottom: 15px; font-size: 16px;">¿Quieres instalar <b>Radio Pasión</b> como app?</p>
+  <p style="margin-bottom: 15px; font-size: 16px;">¿Quieres instalar <b>Radio Inca 96.5 FM</b> como app?</p>
   <button id="install-btn-popup" style="
     background-color: #007BFF;
     color: white;
@@ -292,7 +373,7 @@ overlay-bottom {
 </div>
 <div class="container">
 <div class="logo" style="position: relative;  z-index: 2; border: 4px solid white;">
-<img alt="Radio Pasión" id="logo-img" src="https://i.postimg.cc/nV1p7MR9/1750031181407.jpg"/>
+<img alt="Radio Inca 96.5 FM" id="logo-img" src="https://i.postimg.cc/nV1p7MR9/1750031181407.jpg"/>
 </div><div class="envivo" style="position: absolute; top: 305px; left: 50%; transform: translateX(-50%); background-color: red; color: white; padding: 5px 15px; font-size: 14px; font-weight: bold; border-radius: 4px; z-index: 4; box-shadow: 0 0 5px black;">EN VIVO</div><h1 style="position: absolute; top: 340px; left: 50%; transform: translateX(-50%); color: white; font-size: 24px; font-weight: bold; z-index: 3; white-space: nowrap; text-align: center;">RADIO INCA 96.5 FM</h1>
 <div class="frase-rotativa" style="position: absolute;
     top: 360px;
@@ -311,7 +392,7 @@ overlay-bottom {
       Cargando canción...
     </div>
 </div>
-<audio id="radio" preload="none" src="https://stream.zeno.fm/487vgx80yuhvv"></audio>
+<audio id="radio" preload="none" src="https://stream.zeno.fm/wttrxavefwzuv"></audio>
 <script>
     const audio = document.getElementById('radio');
     const btn = document.querySelector('.player-btn');
@@ -321,7 +402,36 @@ overlay-bottom {
         audio.pause();
         btn.textContent = '▶';
       } else {
-        audio.play();
+        
+    const jingle = new Audio("https://lachizzma.com/wp-content/uploads/2025/06/ESCUCHAS-INCA-FM.mp3");
+    btn.disabled = true;
+    btn.textContent = "…";
+    jingle.play().then(() => {
+      jingle.onended = () => {
+
+audio.play().then(() => {
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: titulo || "Radio Inca 96.5 FM",
+      artist: "Radio Inca 96.5 FM",
+      album: "En Vivo",
+      artwork: [
+        { src: caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg", sizes: "300x300", type: "image/jpeg" }
+      ]
+    });
+  }
+});
+
+        btn.disabled = false;
+        btn.textContent = "⏸";
+        isPlaying = true;
+      };
+    }).catch(() => {
+      btn.disabled = false;
+      btn.textContent = "▶";
+      alert("Toca para activar el sonido");
+    });
+
         btn.textContent = '⏸';
       }
       isPlaying = !isPlaying;
@@ -334,7 +444,7 @@ overlay-bottom {
   </script>
 <div id="metadata" style="position: fixed; bottom: 80px; left: 0px; background: #ffe600; color: black; font-weight: bold; padding: 5px 10px; font-size: 17px; text-align: left; white-space: nowrap; overflow: hidden; width: 55vw; border-radius: 0 6px 6px 0; z-index: 10;"><div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 4px;">🎧 TOCANDO AHORA</div><span id="metadata-text" style="display: inline-block; min-width: 100%; animation: scroll-left 12s linear infinite; color: #0033cc;">Cargando canción...</span></div>
 <script>
-const source = new EventSource("https://api.zeno.fm/mounts/metadata/subscribe/487vgx80yuhvv");
+const source = new EventSource("https://api.zeno.fm/mounts/metadata/subscribe/wke4ravefwzuv");
 
 function buscarEniTunes(titulo) {
   return fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(titulo)}&limit=1`)
@@ -372,6 +482,39 @@ source.onmessage = async function(event) {
   }
 
   logo.src = caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg";
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: titulo,
+        artist: "Radio Inca 96.5 FM",
+        album: "En Vivo",
+        artwork: [
+          { src: caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg", sizes: "300x300", type: "image/jpeg" }
+        ]
+      });
+    }
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: titulo,
+        artist: "Radio Inca 96.5 FM",
+        album: "En Vivo",
+        artwork: [
+          { src: caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg", sizes: "300x300", type: "image/jpeg" }
+        ]
+      });
+    }
+
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: titulo,
+      artist: "Radio Inca 96.5 FM",
+      album: "En Vivo",
+      artwork: [
+        { src: caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg", sizes: "300x300", type: "image/jpeg" }
+      ]
+    });
+  }
+
   const caratulaBlurTop = document.getElementById("caratula-blur-top");
   if (caratula && caratulaBlurTop) {
     
@@ -454,5 +597,33 @@ window.addEventListener("beforeinstallprompt", (e) => {
 });
 </script>
 
+
+
+<footer id="footer-rotativo" style="position:fixed;bottom:0;width:100%;text-align:center;padding:6px 10px;color:#ffffff;font-size:14px;z-index:999;font-weight:500;opacity:1;pointer-events:none;text-shadow:1px 1px 3px rgba(0,0,0,0.7);">
+  <span id="rotativo" style="transition: opacity 0.5s ease;">Desarrollado por Perú Streaming</span>
+</footer>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const frases = ['Desarrollado por Perú Streaming', 'Contactos: 51993111446', 'Recuerda paga después que se te entrega el servicio'];
+    let i = 0;
+    const rotador = document.getElementById("rotativo");
+
+    function rotarTexto() {
+      rotador.style.opacity = 0;
+      setTimeout(() => {
+        rotador.textContent = frases[i];
+        rotador.style.opacity = 1;
+        i = (i + 1) % frases.length;
+      }, 500);
+    }
+
+    rotarTexto();
+    setInterval(rotarTexto, 5000);
+  });
+</script>
 </body>
+
+
+
+
 </html>

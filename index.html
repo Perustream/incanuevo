@@ -231,21 +231,34 @@ overlay-bottom {
 </head>
 <body>
 
-<button id="install-btn" style="
+<div id="install-popup" style="
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  font-size: 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  display: block;
-">📲 Instalar App - Clic aquí</button>
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10000;
+  text-align: center;
+  display: none;
+">
+  <p style="margin-bottom: 15px; font-size: 16px;">¿Quieres instalar <b>Radio Pasión</b> como app?</p>
+  <button id="install-btn-popup" style="
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+  ">📲 Instalar App - Por favor</button>
+</div>
+
+
+
 
 <!-- Botón de compartir -->
 <div class="share-button" onclick="toggleShareMenu()" style="position: fixed; top: 20px; right: 20px; z-index: 999; cursor: pointer;">
@@ -417,37 +430,29 @@ setInterval(() => {
   i = (i + 1) % frases.length;
 }, 3000);
 </script>
+
+
 <script>
-  let deferredPrompt;
-  const installBtn = document.getElementById("install-btn");
-
-  
 let deferredPrompt;
-const installBtn = document.getElementById("install-btn");
-
-installBtn.style.display = "block";
+const popup = document.getElementById("install-popup");
+const installBtnPopup = document.getElementById("install-btn-popup");
 
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.disabled = false;
-});
+  popup.style.display = "block";
 
-installBtn.addEventListener("click", async () => {
-  if (deferredPrompt) {
+  installBtnPopup.addEventListener("click", async () => {
+    popup.style.display = "none";
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       console.log("App instalada");
     }
     deferredPrompt = null;
-    installBtn.style.display = "none";
-  } else {
-    alert("Esta app ya está instalada o no es compatible.");
-  }
-});
-
   });
+});
 </script>
+
 </body>
 </html>

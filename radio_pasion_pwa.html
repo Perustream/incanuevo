@@ -1,0 +1,453 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffe600">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        console.log("Service Worker registrado:", reg);
+      }).catch(function(err) {
+        console.log("Error al registrar Service Worker:", err);
+      });
+    }
+  </script>
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radio Pasión</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
+      color: white;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: space-between;
+      padding: 20px;
+      position: relative;
+    }
+    .logo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: white;
+      overflow: hidden;
+      margin-top: 40px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .player-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #e91e63;
+      color: white;
+      border: none;
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .socials {
+      position: absolute;
+      right: 15px;
+      top: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .socials a {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      font-size: 20px;
+      text-decoration: none;
+    }
+    .now-playing {
+      width: 100%;
+      background: #111;
+      padding: 15px;
+      text-align: center;
+      font-size: 15px;
+    }
+  
+.video-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+}
+.video-fondo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+}
+
+
+
+.video-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -3;
+  clip-path: polygon(0 50%, 100% 30%, 100% 100%, 0 100%);
+}
+.video-bottom video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.45);
+  transform-origin: center top;
+  
+}
+
+
+.video-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -3;
+  clip-path: polygon(0 0, 100% 0, 100% 95%, 0 75%);
+}
+.video-top video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+}
+
+
+overlay-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  clip-path: polygon(0 0, 100% 0, 100% 95%, 0 75%);
+  background: linear-gradient(to bottom, rgba(0, 85, 170, 0.3), rgba(0, 85, 170, 0.05));
+  z-index: -2;
+}
+
+
+overlay-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  clip-path: polygon(0 55%, 100% 35%, 100% 100%, 0 100%);
+  background: linear-gradient(to bottom, rgba(255, 105, 180, 0.75), rgba(255, 20, 147, 0.65));
+  z-index: -2;
+}
+
+@keyframes wave {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05) rotate(-2deg); }
+  100% { transform: scale(1); }
+}
+.logo {
+  animation: wave 2.5s infinite ease-in-out;
+}
+
+.logo::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: ripple 2s infinite;
+  z-index: 1;
+}
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.8; }
+  70% { transform: scale(1.5); opacity: 0.2; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.logo {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.envivo {
+  animation: parpadeo 1s infinite;
+}
+
+@keyframes fade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.frase-rotativa span {
+  animation: fade 3s ease-in-out infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+</head>
+<body>
+
+<button id="install-btn" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  display: block;
+">📲 Instalar App - Clic aquí</button>
+
+<!-- Botón de compartir -->
+<div class="share-button" onclick="toggleShareMenu()" style="position: fixed; top: 20px; right: 20px; z-index: 999; cursor: pointer;">
+<img alt="Compartir" height="40" src="https://i.postimg.cc/Cxhmb4Ny/share.png" width="40"/>
+</div>
+<!-- Menú de compartir -->
+<div class="share-menu" id="shareMenu" style="position: fixed; top: 70px; right: 20px; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 10px; display: none; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index:999;">
+<a href="https://api.whatsapp.com/send?text=Escucha%20Radio%20Pasión%20https://radiopasion.com" style="display: block; text-decoration: none; color: #333; padding: 5px 0; font-size: 14px;" target="_blank">Compartir por WhatsApp</a>
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://radiopasion.com" style="display: block; text-decoration: none; color: #333; padding: 5px 0; font-size: 14px;" target="_blank">Compartir en Facebook</a>
+<a href="https://twitter.com/intent/tweet?text=Escucha%20Radio%20Pasión%20https://radiopasion.com" style="display: block; text-decoration: none; color: #333; padding: 5px 0; font-size: 14px;" target="_blank">Compartir en Twitter</a>
+<a href="#" onclick="copiarEnlace(); return false;" style="display: block; text-decoration: none; color: #333; padding: 5px 0; font-size: 14px;">Copiar enlace</a>
+</div>
+
+<div class="social-bar" style="position: fixed; right: 10px; top: 40%; transform: translateY(-50%); z-index: 10; display: flex; flex-direction: column; gap: 10px;">
+<a href="https://facebook.com/radiopasion" target="_blank"><img height="40" src="https://i.postimg.cc/8kfCdqnt/facebook.png" width="40"/></a>
+<a href="https://youtube.com/@radiopasion" target="_blank"><img height="40" src="https://i.postimg.cc/8z59MVZC/youtube.png" width="40"/></a>
+<a href="https://wa.me/?text=Escucha%20Radio%20Pasión%20en%20https://radiopasion.com" target="_blank"><img height="40" src="https://i.postimg.cc/1zFWrRwy/whatsapp.png" width="40"/></a>
+<a href="https://tiktok.com/@radiopasion" target="_blank"><img height="40" src="https://i.postimg.cc/c1FcYt2Q/tiktok.png" width="40"/></a>
+<a href="https://t.me/radiopasion" target="_blank"><img height="40" src="https://i.postimg.cc/wvLjzNNn/telegram-icon-free-png.png" width="40"/></a>
+</div>
+<div class="image-top" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('https://i.postimg.cc/JnXGVR4b/images-2025-06-15-T203242-968.jpg') no-repeat center center / cover; clip-path: polygon(0 0, 100% 0, 100% 95%, 0 75%); z-index: -3;"></div>
+
+<div id="caratula-blur-top" style="position: fixed; top: 0; left: 0; width: 100vw; height: 250px;clip-path: polygon(0 0, 100% 0, 100% 100%, 0 80%);background-size: cover; background-position: center;backdrop-filter: blur(14px); z-index: 1; display: none;"></div>
+
+<div class="overlay-bottom"></div><div id="fondo-amarillo-dinamico" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; clip-path: none; background: rgba(255, 255, 0, 0.3); z-index: -2; display: none; background-size: cover; background-position: center; backdrop-filter: blur(6px); position: fixed; background-blend-mode: overlay; background-color: rgba(255,255,0,0.35);"></div>
+<div class="overlay-top"></div>
+<div class="video-bottom">
+<video autoplay="" loop="" muted="">
+<source src="https://lachizzma.com/wp-content/uploads/2025/06/14c41855d5ef3ef4488661d3d8098b80.mp4" type="video/mp4"/>
+</video>
+</div>
+<div class="container">
+<div class="logo" style="position: relative;  z-index: 2; border: 4px solid white;">
+<img alt="Radio Pasión" id="logo-img" src="https://i.postimg.cc/nV1p7MR9/1750031181407.jpg"/>
+</div><div class="envivo" style="position: absolute; top: 305px; left: 50%; transform: translateX(-50%); background-color: red; color: white; padding: 5px 15px; font-size: 14px; font-weight: bold; border-radius: 4px; z-index: 4; box-shadow: 0 0 5px black;">EN VIVO</div><h1 style="position: absolute; top: 340px; left: 50%; transform: translateX(-50%); color: white; font-size: 24px; font-weight: bold; z-index: 3; white-space: nowrap; text-align: center;">RADIO INCA 96.5 FM</h1>
+<div class="frase-rotativa" style="position: absolute;
+    top: 360px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    z-index: 3;
+    text-align: center;
+    min-height: 1.2em; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">
+<span id="frase-texto">Transmite desde Cajamarca Perú</span>
+</div>
+<button class="player-btn" onclick="togglePlay()">▶</button>
+<div class="now-playing" id="song-title" style="visibility:hidden; height:0; overflow:hidden;">
+      Cargando canción...
+    </div>
+</div>
+<audio id="radio" preload="none" src="https://stream.zeno.fm/wttrxavefwzuv"></audio>
+<script>
+    const audio = document.getElementById('radio');
+    const btn = document.querySelector('.player-btn');
+    let isPlaying = false;
+    function togglePlay() {
+      if (isPlaying) {
+        audio.pause();
+        btn.textContent = '▶';
+      } else {
+        audio.play();
+        btn.textContent = '⏸';
+      }
+      isPlaying = !isPlaying;
+    }
+
+    // Simulación de actualización de canción (puede ser reemplazado por API real)
+    setTimeout(() => {
+      document.getElementById('song-title').textContent = 'Los Titanes - Eres Mi Razón de Ser';
+    }, 2000);
+  </script>
+<div id="metadata" style="position: fixed; bottom: 80px; left: 0px; background: #ffe600; color: black; font-weight: bold; padding: 5px 10px; font-size: 17px; text-align: left; white-space: nowrap; overflow: hidden; width: 55vw; border-radius: 0 6px 6px 0; z-index: 10;"><div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 4px;">🎧 TOCANDO AHORA</div><span id="metadata-text" style="display: inline-block; min-width: 100%; animation: scroll-left 12s linear infinite; color: #0033cc;">Cargando canción...</span></div>
+<script>
+const source = new EventSource("https://api.zeno.fm/mounts/metadata/subscribe/wke4ravefwzuv");
+
+function buscarEniTunes(titulo) {
+  return fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(titulo)}&limit=1`)
+    .then(res => res.json())
+    .then(json => {
+      if (json.results && json.results.length > 0) {
+        return json.results[0].artworkUrl100.replace("100x100", "300x300");
+      }
+      return null;
+    });
+}
+
+function buscarEnDeezer(titulo) {
+  return fetch(`https://api.deezer.com/search?q=${encodeURIComponent(titulo)}&output=jsonp`)
+    .then(res => res.text())
+    .then(txt => {
+      const jsonText = txt.substring(txt.indexOf("(") + 1, txt.lastIndexOf(")"));
+      const json = JSON.parse(jsonText);
+      if (json.data && json.data.length > 0) {
+        return json.data[0].album.cover_big;
+      }
+      return null;
+    });
+}
+
+source.onmessage = async function(event) {
+  const data = JSON.parse(event.data);
+  const titulo = data.streamTitle || "🎵 Transmitiendo música en vivo...";
+  document.getElementById("metadata-text").textContent = titulo;
+
+  const logo = document.getElementById("logo-img");
+  let caratula = await buscarEniTunes(titulo);
+  if (!caratula) {
+    caratula = await buscarEnDeezer(titulo);
+  }
+
+  logo.src = caratula || "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg";
+  const caratulaBlurTop = document.getElementById("caratula-blur-top");
+  if (caratula && caratulaBlurTop) {
+    
+    caratulaBlurTop.style.display = "block";
+  } else if (caratulaBlurTop) {
+    caratulaBlurTop.style.display = "none";
+    
+  }
+
+};
+
+  const fondoAmarillo = document.getElementById("fondo-amarillo-dinamico");
+  if (caratula && fondoAmarillo) {
+    fondoAmarillo.style.display = "block";
+  } else if (fondoAmarillo) {
+    fondoAmarillo.style.display = "none";
+  }
+
+  if (caratula && fondoAmarillo) {
+    fondoAmarillo.style.backgroundImage = `url(${caratula})`;
+    fondoAmarillo.style.display = "block";
+  } else if (fondoAmarillo) {
+    fondoAmarillo.style.display = "none";
+    fondoAmarillo.style.backgroundImage = "";
+  }
+</script><script>
+function toggleShareMenu() {
+  const menu = document.getElementById('shareMenu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+function copiarEnlace() {
+  const enlace = "https://radiopasion.com";
+  navigator.clipboard.writeText(enlace)
+    .then(() => alert("¡Enlace copiado al portapapeles!"))
+    .catch(err => alert("Error al copiar el enlace"));
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('shareMenu');
+  const button = document.querySelector('.share-button');
+  if (menu && !menu.contains(e.target) && !button.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+</script>
+
+
+
+
+
+
+<script>
+const frases = ["Transmite desde Cajamarca Perú", "Locutores:", "Luis Villanueva", "Wilson Perez", "Orlando Eugenio", "Pablito Chuquiruna", "Octavio Huayhua", "Edwin Arribasplata", "Wilmer Orrillo", "Gerente:", "Salomón Calderón Morales"];
+let i = 0;
+setInterval(() => {
+  document.getElementById("frase-texto").textContent = frases[i];
+  i = (i + 1) % frases.length;
+}, 3000);
+</script>
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById("install-btn");
+
+  
+let deferredPrompt;
+const installBtn = document.getElementById("install-btn");
+
+installBtn.style.display = "block";
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.disabled = false;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      console.log("App instalada");
+    }
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+  } else {
+    alert("Esta app ya está instalada o no es compatible.");
+  }
+});
+
+  });
+</script>
+</body>
+</html>

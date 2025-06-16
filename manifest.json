@@ -1,0 +1,20 @@
+{
+  "name": "Radio Pasi\u00f3n",
+  "short_name": "Radio Pasi\u00f3n",
+  "start_url": "radio_pasion_pwa_boton_integrado_visible.html",
+  "display": "standalone",
+  "background_color": "#ffe600",
+  "theme_color": "#ffe600",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

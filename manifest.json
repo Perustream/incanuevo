@@ -2,7 +2,7 @@
 {
   "name": "Radio Inca 96.5 FM",
   "short_name": "Radio Inca",
-  "start_url": "index_radio_inca_965fm_notificacion_ok.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#e91e63",

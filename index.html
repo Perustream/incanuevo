@@ -17,7 +17,7 @@
 
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Radio Pasión</title>
+<title>Radio Inca</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -311,7 +311,7 @@ overlay-bottom {
       Cargando canción...
     </div>
 </div>
-<audio id="radio" preload="none" src="https://stream.zeno.fm/wttrxavefwzuv"></audio>
+<audio id="radio" preload="none" src="https://stream.zeno.fm/487vgx80yuhvv"></audio>
 <script>
     const audio = document.getElementById('radio');
     const btn = document.querySelector('.player-btn');
@@ -334,7 +334,7 @@ overlay-bottom {
   </script>
 <div id="metadata" style="position: fixed; bottom: 80px; left: 0px; background: #ffe600; color: black; font-weight: bold; padding: 5px 10px; font-size: 17px; text-align: left; white-space: nowrap; overflow: hidden; width: 55vw; border-radius: 0 6px 6px 0; z-index: 10;"><div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 4px;">🎧 TOCANDO AHORA</div><span id="metadata-text" style="display: inline-block; min-width: 100%; animation: scroll-left 12s linear infinite; color: #0033cc;">Cargando canción...</span></div>
 <script>
-const source = new EventSource("https://api.zeno.fm/mounts/metadata/subscribe/wke4ravefwzuv");
+const source = new EventSource("https://api.zeno.fm/mounts/metadata/subscribe/487vgx80yuhvv");
 
 function buscarEniTunes(titulo) {
   return fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(titulo)}&limit=1`)

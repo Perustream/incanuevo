@@ -1,7 +1,7 @@
 {
   "name": "Radio Pasi\u00f3n",
   "short_name": "Radio Pasi\u00f3n",
-  "start_url": "radio_pasion_pwa_boton_integrado_visible.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffe600",
   "theme_color": "#ffe600",

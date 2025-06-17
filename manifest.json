@@ -4,8 +4,8 @@
   "short_name": "Radio Inca",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#e91e63",
+  "background_color": "#FFA500",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "https://i.postimg.cc/nV1p7MR9/1750031181407.jpg",
